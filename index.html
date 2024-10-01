@@ -1,1 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Web App</title>
+</head>
+<body>
+    <h1>Image Web App</h1>
+    <div id="image-container"></div>
 
+    <script>
+        // This function will be used to fetch images from Google Sheets later
+        function displayImages(images) {
+            const container = document.getElementById('image-container');
+            container.innerHTML = ''; // Clear the container first
+            images.forEach(img => {
+                const imgElement = document.createElement('img');
+                imgElement.src = img;
+                imgElement.alt = "Image from Google Sheets";
+                imgElement.style.width = '200px'; // Adjust size if necessary
+                container.appendChild(imgElement);
+            });
+        }
+
+        // Placeholder for now, you will replace this with actual image links from Google Sheets
+        const sampleImages = [
+            'https://via.placeholder.com/200',
+            'https://via.placeholder.com/200'
+        ];
+
+        displayImages(sampleImages); // Display sample images on load
+    </script>
+</body>
+</html>
