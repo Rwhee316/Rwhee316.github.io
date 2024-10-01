@@ -35,7 +35,7 @@
     <script>
     // Function to fetch images from Google Sheets
     function fetchImagesFromGoogleSheets() {
-        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS607mM2QKO0i6fG4ZgMGxAMPl-NaXOYoFxF1FOA2dkBG3vIf8xFhCa1HE3MMApYrHv_b1Tp_rmrLPn/pubhtml'; // Add your Google Sheets published CSV URL here
+        const sheetURL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS607mM2QKO0i6fG4ZgMGxAMPl-NaXOYoFxF1FOA2dkBG3vIf8xFhCa1HE3MMApYrHv_b1Tp_rmrLPn/pub?output=csv'; // Add your Google Sheets published CSV URL here
 
         fetch(sheetURL)
             .then(response => response.text())
