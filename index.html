@@ -4,86 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Web App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        #image-container img {
+            margin: 10px;
+            width: 200px;
+            height: auto;
+        }
+    </style>
 </head>
 <body>
     <h1>Image Web App</h1>
+    <p>Here are the images loaded from Google Sheets:</p>
     <div id="image-container"></div>
 
     <script>
-        // This function will be used to fetch images from Google Sheets later
+        // Function to fetch and display images from Google Sheets
+        function fetchImagesFromGoogleSheets() {
+            const sheetURL = 'YOUR_GOOGLE_SHEETS_PUBLISHED_CSV_URL'; // Replace with your Google Sheets CSV URL
+
+            fetch(sheetURL)
+                .then(response => response.text())
+                .then(data => {
+                    const rows = data.split("\n").map(row => row.split(","));
+                    const images = rows.map(row => row[0]); // Assuming image URLs are in the first column
+                    displayImages(images); // Call function to display the images
+                })
+                .catch(error => console.error('Error fetching images:', error));
+        }
+
+        // Function to display images on the web page
         function displayImages(images) {
             const container = document.getElementById('image-container');
-            container.innerHTML = ''; // Clear the container first
+            container.innerHTML = ''; // Clear container before adding new images
             images.forEach(img => {
                 const imgElement = document.createElement('img');
                 imgElement.src = img;
                 imgElement.alt = "Image from Google Sheets";
-                imgElement.style.width = '200px'; // Adjust size if necessary
                 container.appendChild(imgElement);
             });
         }
 
-        // Placeholder for now, you will replace this with actual image links from Google Sheets
-        const sampleImages = [
-            'https://docs.google.com/spreadsheets/d/e/2PACX-1vS607mM2QKO0i6fG4ZgMGxAMPl-NaXOYoFxF1FOA2dkBG3vIf8xFhCa1HE3MMApYrHv_b1Tp_rmrLPn/pub?output=csv'
-        ];
-
-        displayImages(sampleImages); // Display sample images on load
+        // Call the function to fetch and display images when the page loads
+        fetchImagesFromGoogleSheets();
     </script>
-
-    import os
-import pickle
-import google.auth
-from googleapiclient.discovery import build
-from google_auth_oauthlib.flow import InstalledAppFlow
-from google.auth.transport.requests import Request
-
-# Define the scope (access to Google Sheets)
-SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
-
-# Load credentials from file
-def get_credentials():
-    creds = None
-    # Check if token.pickle exists (token is stored after authentication)
-    if os.path.exists('token.pickle'):
-        with open('token.pickle', 'rb') as token:
-            creds = pickle.load(token)
-    # If no credentials or the token is expired, authenticate the user
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
-            creds = flow.run_local_server(port=0)
-        # Save credentials for future use
-        with open('token.pickle', 'wb') as token:
-            pickle.dump(creds, token)
-    return creds
-
-# Access Google Sheets API
-def get_google_sheet():
-    creds = get_credentials()
-    service = build('sheets', 'v4', credentials=creds)
-    sheet = service.spreadsheets()
-
-    # The ID and range of the Google Sheet you want to access
-    SAMPLE_SPREADSHEET_ID = '12dkYpc21pAbPJGVUz8X2QnRiExpxzrSVZn94fRNwY2U'
-    SAMPLE_RANGE_NAME = 'Sheet1!A1:D10'
-
-    # Call the Sheets API
-    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
-                                range=SAMPLE_RANGE_NAME).execute()
-    values = result.get('values', [])
-
-    if not values:
-        print('No data found.')
-    else:
-        for row in values:
-            print(row)
-
-get_google_sheet()
-
-
- 
 </body>
 </html>
