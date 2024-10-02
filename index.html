@@ -51,5 +51,35 @@
         // Call the function to fetch and display images when the page loads
         fetchImagesFromGoogleSheets();
     </script>
+
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Sheets API Example</title>
+</head>
+<body>
+    <h1>Google Sheets Data</h1>
+    <pre id="sheet-data"></pre>
+
+    <script>
+        const apiKey = 'AIzaSyDzE3w3bGfNIkdnJzVqZsVekldtPBBK1xI'; // Replace with your API key
+        const spreadsheetId = '2PACX-1vQCvVHaHWXD6u6kefjWZTbTwMmoIgGVb_oas6VFfNvxgag6vbSuZFa7J7b13vhLWlSZAIiFLdLxnoAY/pub?output=csv'; // Replace with your Spreadsheet ID
+        const range = 'Sheet1!A1:B10'; // Adjust the range to your needs
+
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}/values/${range}?key=${apiKey}`;
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const output = JSON.stringify(data.values, null, 2);
+                document.getElementById('sheet-data').textContent = output;
+            })
+            .catch(error => console.error('Error fetching data:', error));
+    </script>
+</body>
+</html>
+
 </body>
 </html>
