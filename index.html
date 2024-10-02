@@ -31,6 +31,59 @@
         displayImages(sampleImages); // Display sample images on load
     </script>
 
+    import os
+import pickle
+import google.auth
+from googleapiclient.discovery import build
+from google_auth_oauthlib.flow import InstalledAppFlow
+from google.auth.transport.requests import Request
+
+# Define the scope (access to Google Sheets)
+SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
+
+# Load credentials from file
+def get_credentials():
+    creds = None
+    # Check if token.pickle exists (token is stored after authentication)
+    if os.path.exists('token.pickle'):
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+    # If no credentials or the token is expired, authenticate the user
+    if not creds or not creds.valid:
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        else:
+            flow = InstalledAppFlow.from_client_secrets_file('credentials.json', SCOPES)
+            creds = flow.run_local_server(port=0)
+        # Save credentials for future use
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+    return creds
+
+# Access Google Sheets API
+def get_google_sheet():
+    creds = get_credentials()
+    service = build('sheets', 'v4', credentials=creds)
+    sheet = service.spreadsheets()
+
+    # The ID and range of the Google Sheet you want to access
+    SAMPLE_SPREADSHEET_ID = '12dkYpc21pAbPJGVUz8X2QnRiExpxzrSVZn94fRNwY2U'
+    SAMPLE_RANGE_NAME = 'Sheet1!A1:D10'
+
+    # Call the Sheets API
+    result = sheet.values().get(spreadsheetId=SAMPLE_SPREADSHEET_ID,
+                                range=SAMPLE_RANGE_NAME).execute()
+    values = result.get('values', [])
+
+    if not values:
+        print('No data found.')
+    else:
+        for row in values:
+            print(row)
+
+get_google_sheet()
+
+
  
 </body>
 </html>
